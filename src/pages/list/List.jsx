@@ -4,13 +4,16 @@ import Navbar from "../../components/navbar/Navbar";
 import Datatable from "../../components/datatable/Datatable";
 import Restaurantstable from "../../components/restaurantstable/Restaurantstable";
 import Dishestable from "../../components/dishestable/DishesTable";
+import CategoriesTable from "../../components/categoriesTable/CategoriesTable";
 import Orderstable from "../../components/orderstable/Orderstable";
+
 
 const Item = ({ type }) => {
   if (type === "users") return <Datatable />;
   else if (type === "restaurants") return <Restaurantstable />;
   else if (type === "dishes") return <Dishestable />;
   else if (type === "orders") return <Orderstable />;
+  else if (type === 'categoris') return <CategoriesTable />
   else return <Datatable />;
 };
 

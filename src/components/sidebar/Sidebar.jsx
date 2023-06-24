@@ -57,6 +57,12 @@ const Sidebar = () => {
               <span>Dishes</span>
             </li>
           </Link>
+          <Link to='/categories' style={{ textDecoration: "none" }}>
+            <li>
+              <FoodBank className='icon' />
+              <span>Categories</span>
+            </li>
+          </Link>
           <p className='title'>USEFUL</p>
           <li>
             <InsertChartIcon className='icon' />

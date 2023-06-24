@@ -7,6 +7,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import Table from "../table/Table";
 
+import {paymentApi} from '../../utils/paymentApi'
+
 const Orderstable = () => {
   // const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -14,14 +16,18 @@ const Orderstable = () => {
   const [rows, setRows] = useState([]);
   useEffect(() => {
     const getOrders = () => {
-      fetch("http://localhost:8800/api/order/getOrders")
+      setLoading(true);
+      fetch(`${paymentApi}/order/getOrders`)
         .then((orders) => orders.json())
-        .then((data) => setRows(data))
-        .catch((err) => setError(true));
+        .then((data) => {
+          setRows(data)
+          setLoading(false)
+        })
+        .catch((err) => {
+          setError(true)
+        });
     };
-    setLoading(true);
     getOrders();
-    setLoading(false);
   }, []);
 
   // const actionColumn = [
@@ -53,9 +59,7 @@ const Orderstable = () => {
     <div className='datatable'>
       <div className='datatableTitle'>
         View Orders
-        {/* <Link to='/dishes/new' className='link'>
-          Add New
-        </Link> */}
+        
       </div>
       {loading ? (
         <CircularProgress

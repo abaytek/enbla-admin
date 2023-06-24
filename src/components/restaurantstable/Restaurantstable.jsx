@@ -5,69 +5,27 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { restaurantColumns, restaurantRows } from "../../datatablesource";
 import { useEffect } from "react";
-// import {
-//     collection,
-//     getDocs,
-//   deleteDoc,
-//   doc,
-//   // onSnapshot,
-// } from "firebase/firestore";
-// import { db } from "../../firebase-config";
+import {getRestaurants} from "../../utils/api"
+import sanityClient from '../../config/sanity';
 
 const Restaurantstable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   useEffect(() => {
-    setData(restaurantRows);
+    setLoading(true)
+    getRestaurants().then(restaurant => {
+      setData(restaurant)
+      setLoading(false)
+    }).catch(err => {
+      console.log(err)
+      setError(true)
+      setLoading(false)
+    })
   }, []);
-
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       setLoading(true);
-  //       let list = [];
-  //       try {
-  //         const querySnapshot = await getDocs(collection(db, "users"));
-  //         querySnapshot.forEach((doc) => {
-  //           list.push({ id: doc.id, ...doc.data() });
-  //         });
-  //         setData(list);
-  //         setLoading(false);
-  //       } catch (err) {
-  //         setError(true);
-  //         console.log(err);
-  //       }
-  //     };
-  //     fetchData();
-
-  // LISTEN (REALTIME)
-  // const unsub = onSnapshot(
-  //   collection(db, "users"),
-  //   (snapShot) => {
-  //     let list = [];
-  //     snapShot.docs.forEach((doc) => {
-  //       list.push({ id: doc.id, ...doc.data() });
-  //     });
-  //     setData(list);
-  //   },
-  //   (error) => {
-  //     console.log(error);
-  //   }
-  // );
-
-  // return () => {
-  //   unsub();
-  // };
-  //   }, []);
-
-  //   const handleDelete = async (id) => {
-  //     try {
-  //       await deleteDoc(doc(db, "users", id));
-  //       setData(data.filter((item) => item.id !== id));
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
+  const handleDelete =async (id) => {
+    await sanityClient.delete(id).then(setData(data.filter(restaurant => restaurant._id !== id))).catch(err => console.log(err))
+  }
 
   const actionColumn = [
     {
@@ -78,14 +36,14 @@ const Restaurantstable = () => {
         return (
           <div className='cellAction'>
             <Link
-              to={`/users/${params.row.id}`}
+              to={`/restaurant/${params.row._id}`}
               style={{ textDecoration: "none" }}
             >
               <div className='viewButton'>View</div>
             </Link>
             <div
               className='deleteButton'
-              //   onClick={() => handleDelete(params.row.id)}
+                onClick={() => handleDelete(params.row._id)}
             >
               Delete
             </div>
@@ -98,7 +56,7 @@ const Restaurantstable = () => {
     <div className='datatable'>
       <div className='datatableTitle'>
         Add New Restaurant
-        <Link to='/dishes/new' className='link'>
+        <Link to='/restaurant/new' className='link'>
           Add New
         </Link>
       </div>
@@ -122,6 +80,7 @@ const Restaurantstable = () => {
           pageSize={9}
           rowsPerPageOptions={[9]}
           checkboxSelection
+          getRowId={(row) => row._id}
         />
       )}
       {error && <h3>Something Went Wrong</h3>}

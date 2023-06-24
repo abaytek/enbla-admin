@@ -6,6 +6,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import moment from 'moment'
 
 const List = ({ rows }) => {
   return (
@@ -26,29 +27,29 @@ const List = ({ rows }) => {
         </TableHead>
         <TableBody>
           {rows?.map((row) => (
-            <TableRow key={row._id}>
-              <TableCell className='tableCell'>{row._id}</TableCell>
-              <TableCell className='tableCell'>{row.customerId}</TableCell>
+            <TableRow key={row?._id}>
+              <TableCell className='tableCell'>{row?._id}</TableCell>
+              <TableCell className='tableCell'>{row?.customerId}</TableCell>
               <TableCell className='tableCell'>
                 <div className='cellWrapper'>
                   {/* <img src={row.img} alt='' className='image' /> */}
-                  {row.products.map((prod) => (
+                  {row?.products.map((prod) => (
                     <TableCell className='tableCell'>{prod.name}</TableCell>
                   ))}
                 </div>
               </TableCell>
               <TableCell className='tableCell'>
-                {row.customer.first_name + " " + row.customer.last_name}
+                {row?.customer.first_name + " " + row?.customer.last_name}
               </TableCell>
-              <TableCell className='tableCell'>{row.orderDate}</TableCell>
-              <TableCell className='tableCell'>{row.totalPrice}</TableCell>
+              <TableCell className='tableCell'>{moment(row?.orderDate).fromNow()}</TableCell>
+              <TableCell className='tableCell'>{row?.totalPrice}</TableCell>
               <TableCell className='tableCell'>
-                {row.shippingAddress.address}
+                {row?.shippingAddress.address}
               </TableCell>
-              <TableCell className='tableCell'>{row.currency}</TableCell>
+              <TableCell className='tableCell'>{row?.currency}</TableCell>
               <TableCell className='tableCell'>
-                <span className={`status ${row.paymentStatus}`}>
-                  {row.paymentStatus}
+                <span className={`status ${row?.paymentStatus}`}>
+                  {row?.paymentStatus}
                 </span>
               </TableCell>
             </TableRow>

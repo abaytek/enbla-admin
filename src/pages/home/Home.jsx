@@ -6,12 +6,14 @@ import Widget from "../../components/widget/Widget";
 // import Chart from "../../components/chart/Chart";
 import Table from "../../components/table/Table";
 import { useEffect, useState } from "react";
+import {paymentApi} from '../../utils/paymentApi'
+
 
 const Home = () => {
   const [rows, setRows] = useState([]);
   useEffect(() => {
     const getOrders = () => {
-      fetch("http://localhost:8800/api/order/getLatestOrders")
+      fetch(`${paymentApi}/order/getLatestOrders`)
         .then((orders) => orders.json())
         .then((data) => setRows(data))
         .catch((err) => console.log(err));

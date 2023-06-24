@@ -3,71 +3,32 @@ import { DataGrid } from "@mui/x-data-grid";
 import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { restaurantColumns, restaurantRows } from "../../datatablesource";
+import { dishColumns, dishRows } from "../../datatablesource";
 import { useEffect } from "react";
-// import {
-//     collection,
-//     getDocs,
-//   deleteDoc,
-//   doc,
-//   // onSnapshot,
-// } from "firebase/firestore";
-// import { db } from "../../firebase-config";
+import {getDishes} from "../../utils/api"
+import sanityClient from '../../config/sanity';
+
+
 
 const Dishestable = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
   useEffect(() => {
-    setData(restaurantRows);
+    setLoading(true)
+    getDishes().then(restaurant => {
+      setData(restaurant)
+      setLoading(false)
+    }).catch(err => {
+      console.log(err)
+      setError(true)
+  })
   }, []);
 
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //       setLoading(true);
-  //       let list = [];
-  //       try {
-  //         const querySnapshot = await getDocs(collection(db, "users"));
-  //         querySnapshot.forEach((doc) => {
-  //           list.push({ id: doc.id, ...doc.data() });
-  //         });
-  //         setData(list);
-  //         setLoading(false);
-  //       } catch (err) {
-  //         setError(true);
-  //         console.log(err);
-  //       }
-  //     };
-  //     fetchData();
-
-  // LISTEN (REALTIME)
-  // const unsub = onSnapshot(
-  //   collection(db, "users"),
-  //   (snapShot) => {
-  //     let list = [];
-  //     snapShot.docs.forEach((doc) => {
-  //       list.push({ id: doc.id, ...doc.data() });
-  //     });
-  //     setData(list);
-  //   },
-  //   (error) => {
-  //     console.log(error);
-  //   }
-  // );
-
-  // return () => {
-  //   unsub();
-  // };
-  //   }, []);
-
-  //   const handleDelete = async (id) => {
-  //     try {
-  //       await deleteDoc(doc(db, "users", id));
-  //       setData(data.filter((item) => item.id !== id));
-  //     } catch (err) {
-  //       console.log(err);
-  //     }
-  //   };
+   const handleDelete =async (id) => {
+     sanityClient.delete(id).then(setData(data.filter(dish => dish._id !== id))).catch(err => console.log(err))
+  }
 
   const actionColumn = [
     {
@@ -78,14 +39,14 @@ const Dishestable = () => {
         return (
           <div className='cellAction'>
             <Link
-              to={`/users/${params.row.id}`}
+              to={`/dishes/${params.row._id}`}
               style={{ textDecoration: "none" }}
             >
               <div className='viewButton'>View</div>
             </Link>
             <div
               className='deleteButton'
-              //   onClick={() => handleDelete(params.row.id)}
+                onClick={() => handleDelete(params.row._id)}
             >
               Delete
             </div>
@@ -118,10 +79,11 @@ const Dishestable = () => {
         <DataGrid
           className='datagrid'
           rows={data}
-          columns={restaurantColumns.concat(actionColumn)}
+          columns={dishColumns.concat(actionColumn)}
           pageSize={9}
           rowsPerPageOptions={[9]}
           checkboxSelection
+          getRowId={(row) => row._id}
         />
       )}
       {error && <h3>Something Went Wrong</h3>}

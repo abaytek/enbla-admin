@@ -4,12 +4,44 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import {useEffect, useState} from 'react'
+import {Link} from 'react-router-dom'
+import { db } from "../../firebase-config";
+import {
+  collection,
+  getDocs,
+  // onSnapshot,
+} from "firebase/firestore";
+
+import {paymentApi} from '../../utils/paymentApi'
 
 const Widget = ({ type, rows }) => {
   let data;
+  const [total, setTotal] = useState(0);
+  const [numberOfUser, setNumberOfUser] = useState(0) 
+  useEffect(() => {
+    const getOrders = () => {
+      fetch(`${paymentApi}/order/getTotalSell`)
+        .then((orders) => orders.json())
+        .then((data) => setTotal(data))
+        .catch((err) => console.log(err));
+    };
+    const fetchData = async () => {
+      let list = [];
+      try {
+        const querySnapshot = await getDocs(collection(db, "users"));
+        querySnapshot.forEach((doc) => {
+          list.push({ id: doc.id, ...doc.data() });
+        });
+        setNumberOfUser(list.length);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+    getOrders();
+  }, []);
 
-  //tempora
-  const amount = 870;
   const diff = 20;
 
   switch (type) {
@@ -17,25 +49,28 @@ const Widget = ({ type, rows }) => {
       data = {
         title: "USERS",
         isMoney: false,
+        amount:numberOfUser,
         link: "See all users",
+        goto:'/users',
         icon: (
           <PersonOutlinedIcon
             className='icon'
             style={{
               backgroundColor: "rgba(218, 165, 32, 0.2)",
               color: "goldenrod",
-              // color: "crimson",
-              // backgroundColor: "rgba(255, 0, 0, 0.2)",
+            
             }}
           />
-        ),
+        )
       };
       break;
     case "order":
       data = {
         title: "ORDERS",
         isMoney: false,
+        amount: rows?.length,
         link: "View all orders",
+        goto:'/orders',
         icon: (
           <ShoppingCartOutlinedIcon
             className='icon'
@@ -51,7 +86,9 @@ const Widget = ({ type, rows }) => {
       data = {
         title: "EARNINGS",
         isMoney: true,
-        link: "View net earnings",
+        amount: total,
+        link: "",
+        goto:'/orders',
         icon: (
           <MonetizationOnOutlinedIcon
             className='icon'
@@ -64,7 +101,9 @@ const Widget = ({ type, rows }) => {
       data = {
         title: "BALANCE",
         isMoney: true,
-        link: "See details",
+        amount: total,
+        link: "",
+        goto:'/orders',
         icon: (
           <AccountBalanceWalletOutlinedIcon
             className='icon'
@@ -85,9 +124,9 @@ const Widget = ({ type, rows }) => {
       <div className='left'>
         <span className='title'>{data.title}</span>
         <span className='counter'>
-          {data.isMoney ? `ETB ${amount}` : `${rows?.length}`}
+          {data.isMoney ? `ETB ${data.amount}` : `${data.amount}`}
         </span>
-        <span className='link'>{data.link}</span>
+        <Link to={data.goto} className='link'>{data.link}</Link>
       </div>
       <div className='right'>
         <div className='percentage positive'>

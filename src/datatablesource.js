@@ -51,6 +51,7 @@ export const userColumns = [
     },
   },
 ];
+
 export const userRows = [
   {
     id: 1,
@@ -101,22 +102,26 @@ export const userRows = [
 
 // RESTAURANTS DATA
 export const restaurantColumns = [
-  { field: "id", headerName: "ID", width: 70 },
+  { 
+    field: "id", 
+    headerName: "ID", 
+    width: 50,
+    renderCell: (params) => {
+      return (
+        <div>
+          {params.row._id}
+        </div>
+      );
+    } 
+  },
   {
     field: "restaurantName",
     headerName: "Restaurant Name",
-    width: 180,
+    width: 100,
     renderCell: (params) => {
       return (
         <div className='cellWithImg'>
-          <img
-            className='cellImg'
-            src={
-              "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-            }
-            alt='avatar'
-          />
-          {params.row.restaurantName}
+          {params.row.name}
         </div>
       );
     },
@@ -126,7 +131,7 @@ export const restaurantColumns = [
     headerName: "Adress",
     width: 150,
     renderCell: (params) => {
-      return <div className='cellWithImg'>{params.row.adress}</div>;
+      return <div className='cellWithImg'>{params.row.address}</div>;
     },
   },
   {
@@ -140,11 +145,18 @@ export const restaurantColumns = [
     width: 100,
   },
 
-  {
-    field: "dishes",
-    headerName: "Dishes",
-    width: 180,
-  },
+  // {
+  //   field: "dishes",
+  //   headerName: "Dishes",
+  //   width: 180,
+  //   renderCell: (params) => {
+  //     return (
+  //       <div>
+  //         {params.row.dishes.map(dish => <p>{dish?.name + ", "}</p>)}
+  //       </div>
+  //     );
+  //   }
+  // },
   {
     field: "phone",
     headerName: "Phone",
@@ -152,7 +164,7 @@ export const restaurantColumns = [
     renderCell: (params) => {
       return (
         <div className={`cellWithStatus ${params.row.status}`}>
-          {params.row.phone}
+          {params.row.phonenumber}
         </div>
       );
     },
@@ -165,7 +177,7 @@ export const restaurantRows = [
     restaurantName: "Maleda Cafe",
     img: "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
     email: "maleda@gmail.com",
-    adress: "Arat killo",
+    address: "Arat killo",
     dishes: ["Kitfo", "Kuanta Firfir"],
     phone: "0955898989",
     rating: 4.6,
@@ -175,7 +187,7 @@ export const restaurantRows = [
     restaurantName: "Maleda Cafe",
     img: "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
     email: "maleda@gmail.com",
-    adress: "Arat killo",
+    address: "Arat killo",
     dishes: ["Kitfo", "Kuanta Firfir"],
     phone: "0955898989",
     rating: 4.7,
@@ -276,5 +288,126 @@ export const ordersRow = [
     currency: "ETB",
     status: "completed",
     shippingAdress: "Bole Medhanialem, Lealem Hintsa",
+  },
+];
+
+
+// DISHES DATA
+export const dishColumns = [
+  { 
+    field: "id", 
+    headerName: "ID", 
+    width: 70,
+    renderCell: (params) => {
+      return (
+        <div>
+          {params.row._id}
+        </div>
+      );
+    } 
+  },
+  {
+    field: "dishName",
+    headerName: "Dish Name",
+    width: 180,
+    renderCell: (params) => {
+      return (
+        <div className='cellWithImg'>
+          {params.row.name}
+        </div>
+      );
+    },
+  },
+  {
+    field: "price",
+    headerName: "Price",
+    width: 150,
+    renderCell: (params) => {
+      return <div className='cellWithImg'>{params.row.price}</div>;
+    },
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    width: 170,
+  },
+];
+
+export const dishRows = [
+  {
+    id: 1,
+    dishName: "Burger",
+    img: "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
+    price: 200,
+    description: "Amazing fasting burger"
+  },
+  {
+    id: 2,
+    dishName: "Burger",
+    img: "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
+    price: 200,
+    description: "Amazing fasting burger"
+  },
+  {
+    id: 3,
+    dishName: "Burger",
+    img: "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
+    price: 200,
+    description: "Amazing fasting burger"
+  },
+];
+
+
+// DISHES DATA
+export const categoryColumns = [
+  { 
+    field: "id", 
+    headerName: "ID", 
+    width: 40,
+    renderCell: (params) => {
+      return (
+        <div>
+          {params.row._id}
+        </div>
+      );
+    } 
+  },
+  {
+    field: "categoryName",
+    headerName: "Category Name",
+    width: 180,
+    renderCell: (params) => {
+      return (
+        <div className='cellWithImg'>
+          {params.row.name}
+        </div>
+      );
+    },
+  },
+  {
+    field: "description",
+    headerName: "Description",
+    width: 170,
+  },
+];
+
+export const categoryRows = [
+  {
+    id: 1,
+    categoryName: "Burger",
+    img: "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
+    description: "Amazing fasting burger"
+  },
+  {
+    id: 2,
+    categoryName: "Burger",
+    img: "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
+    description: "Amazing fasting burger"
+  },
+  {
+    id: 3,
+    categoryName: "Burger",
+    img: "https://images.pexels.com/photos/1820770/pexels-photo-1820770.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500",
+    description: "Amazing fasting burger",
   },
 ];

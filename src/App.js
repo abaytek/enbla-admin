@@ -3,8 +3,19 @@ import Login from "./pages/login/Login";
 import List from "./pages/list/List";
 import Single from "./pages/single/Single";
 import New from "./pages/new/New";
+import NewDish from "./pages/newDish/NewDish";
+import NewRestaurant from "./pages/newRestaurant/NewRestaurant";
+import NewCategory from "./pages/newCategory/NewCategory";
+import SingleRestaurant from "./pages/singleRestaurant/SingleRestaurant"
+import SingleDish from "./pages/singleDish/SingleDish"
+import SingleCategory from "./pages/singleCategory/SingleCategory"
+
+
+
+
+
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { productInputs, userInputs } from "./formSource";
+import { productInputs, dishInputs, restaurantInputs, userInputs, categoryInputs } from "./formSource";
 import "./style/dark.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
@@ -69,10 +80,10 @@ function App() {
                 }
               />
               <Route
-                path=':productId'
+                path=':restaurantId'
                 element={
                   <RequireAuth>
-                    <Single />
+                    <SingleRestaurant />
                   </RequireAuth>
                 }
               />
@@ -80,7 +91,7 @@ function App() {
                 path='new'
                 element={
                   <RequireAuth>
-                    <New inputs={productInputs} title='Add New Product' />
+                    <NewRestaurant inputs={restaurantInputs} title='Add New Restaurant' />
                   </RequireAuth>
                 }
               />
@@ -118,7 +129,7 @@ function App() {
                 path=':dishId'
                 element={
                   <RequireAuth>
-                    <Single />
+                    <SingleDish />
                   </RequireAuth>
                 }
               />
@@ -126,11 +137,39 @@ function App() {
                 path='new'
                 element={
                   <RequireAuth>
-                    <New inputs={productInputs} title='Add New Product' />
+                    <NewDish inputs={dishInputs} title='Add New Dish' />
                   </RequireAuth>
                 }
               />
             </Route>
+
+            <Route path='categories'>
+              <Route
+                index
+                element={
+                  <RequireAuth>
+                    <List type='categoris' />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path=':categoryId'
+                element={
+                  <RequireAuth>
+                    <SingleCategory />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path='new'
+                element={
+                  <RequireAuth>
+                    <NewCategory inputs={categoryInputs} title='Add New Category' />
+                  </RequireAuth>
+                }
+              />
+            </Route>
+
           </Route>
         </Routes>
       </BrowserRouter>

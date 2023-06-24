@@ -1,51 +1,34 @@
-import "./datatable.scss";
+import "./dishestable.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { CircularProgress } from "@mui/material";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { userColumns } from "../../datatablesource";
-import {
-  collection,
-  getDocs,
-  deleteDoc,
-  doc,
-  // onSnapshot,
-} from "firebase/firestore";
-import { db } from "../../firebase-config";
+import { useState } from "react";
+import { dishColumns, dishRows } from "../../datatablesource";
+import { useEffect } from "react";
+import {getDishes} from "../../utils/api"
+import sanityClient from '../../config/sanity';
 
-const Datatable = ({ type }) => {
+
+
+const Categories = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      let list = [];
-      try {
-        const querySnapshot = await getDocs(collection(db, "users"));
-        querySnapshot.forEach((doc) => {
-          list.push({ id: doc.id, ...doc.data() });
-        });
-        setData(list);
-        setLoading(false);
-      } catch (err) {
-        setError(true);
-        console.log(err); 
-        console.log(err) 
-      }
-    };
-    fetchData();
+    setLoading(true)
+    getDishes().then(restaurant => {
+      setData(restaurant)
+      setLoading(false)
+    }).catch(err => {
+      console.log(err)
+      setError(true)
+  })
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await deleteDoc(doc(db, "users", id));
-      setData(data.filter((item) => item.id !== id));
-    } catch (err) {
-      console.log(err);
-    }
-  };
+   const handleDelete =async (id) => {
+     sanityClient.delete(id).then(setData(data.filter(dish => dish._id !== id))).catch(err => console.log(err))
+  }
 
   const actionColumn = [
     {
@@ -56,14 +39,14 @@ const Datatable = ({ type }) => {
         return (
           <div className='cellAction'>
             <Link
-              to={`/users/${params.row?.id}`}
+              to={`/categories/${params.row._id}`}
               style={{ textDecoration: "none" }}
             >
               <div className='viewButton'>View</div>
             </Link>
             <div
               className='deleteButton'
-              onClick={() => handleDelete(params.row.id)}
+                onClick={() => handleDelete(params.row._id)}
             >
               Delete
             </div>
@@ -75,8 +58,8 @@ const Datatable = ({ type }) => {
   return (
     <div className='datatable'>
       <div className='datatableTitle'>
-        Add New User
-        <Link to='/users/new' className='link'>
+        Add New Category
+        <Link to='/dishes/new' className='link'>
           Add New
         </Link>
       </div>
@@ -96,10 +79,11 @@ const Datatable = ({ type }) => {
         <DataGrid
           className='datagrid'
           rows={data}
-          columns={userColumns.concat(actionColumn)}
+          columns={dishColumns.concat(actionColumn)}
           pageSize={9}
           rowsPerPageOptions={[9]}
           checkboxSelection
+          getRowId={(row) => row._id}
         />
       )}
       {error && <h3>Something Went Wrong</h3>}
@@ -107,4 +91,4 @@ const Datatable = ({ type }) => {
   );
 };
 
-export default Datatable;
+export default Categories;
