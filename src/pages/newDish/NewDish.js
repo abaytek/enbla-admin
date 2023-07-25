@@ -28,7 +28,6 @@ const NewDish = ({ inputs, title }) => {
   const handleImageUpload = async () => {
 	  const asset = await sanityClient.assets.upload('image', file);
 	  setImage(asset?._id);
-	  console.log(image)
 	};
 
   const handleAdd = async (e) => {
